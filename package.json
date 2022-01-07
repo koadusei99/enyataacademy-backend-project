@@ -1,0 +1,22 @@
+{
+  "name": "academy-backend-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koadusei99/enyataacademy-backend-project.git"
+  },
+  "author": "Daverose Musuruba Tholley, Kwaku Adusei Okyere, Papa Yaw Agyekum Addo, Mark Amoah, David Tawiah Glover",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/koadusei99/enyataacademy-backend-project/issues"
+  },
+  "homepage": "https://github.com/koadusei99/enyataacademy-backend-project#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}

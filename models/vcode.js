@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Vcode extends Model {
     /**
@@ -12,14 +10,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-  };
-  Vcode.init({
-    user_id: DataTypes.INTEGER,
-    code: DataTypes.STRING,
-    expires_at: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Vcode',
-  });
+  }
+  Vcode.init(
+    {
+      user_id: DataTypes.INTEGER,
+      code: DataTypes.STRING,
+      expires_at: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "Vcode",
+    }
+  );
   return Vcode;
 };

@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require('morgan');
 var pg = require('pg');
 
+const { registerUser } = require("./controllers/AuthController");
 const app = express();
 require('dotenv').config();
 const port = 3000;
@@ -26,10 +27,13 @@ client.connect(function (err) {
     client.end();
   });
 });
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+app.post("/register", registerUser);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

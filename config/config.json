@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "gwehehpj",
+    "password": "a08sVZRFfVLVPPTDo2-87gyvRF7LLWsM",
+    "database": "gwehehpj",
+    "host": "castor.db.elephantsql.com",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "gwehehpj",
+    "password": "a08sVZRFfVLVPPTDo2-87gyvRF7LLWsM",
+    "database": "gwehehpj",
+    "host": "castor.db.elephantsql.com",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "gwehehpj",
+    "password": "a08sVZRFfVLVPPTDo2-87gyvRF7LLWsM",
+    "database": "gwehehpj",
+    "host": "castor.db.elephantsql.com",
+    "dialect": "postgres"
+  }
+}

@@ -21,7 +21,10 @@
   "homepage": "https://github.com/koadusei99/enyataacademy-backend-project#readme",
   "dependencies": {
     "dotenv": "^10.0.0",
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "morgan": "^1.10.0",
+    "pg": "^8.7.1",
+    "sequelize": "^6.12.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

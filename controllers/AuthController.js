@@ -1,5 +1,5 @@
 const db = require("../models/index");
-const { genStr, addMinutes, hashPassword } = require("../util");
+const { genStr, addMinutes, hashPassword, genOTP } = require("../util");
 const { sendMail } = require("../controllers/MailController");
 const { validationResult } = require("express-validator");
 const { createJWT } = require("../middleware/Auth");
@@ -23,6 +23,9 @@ const registerUser = async (req, res) => {
     phone,
     pin,
   });
+  // send mail with OTP
+  sendMail("welcome", { email: email, firstName }, genOTP(4));
+
   const token = createJWT({ identifier: email, name: firstName });
   res.status(201).json({ message: "Account Created", token, result });
 };
@@ -55,11 +58,11 @@ const forgotPassword = async (req, res) => {
     });
 
     // send mail with reset code
-    // sendMail(
-    //   "forgot",
-    //   { email: user.email, firstName: user.firstName },
-    //   resetCode.code
-    // );
+    sendMail(
+      "forgot",
+      { email: user.email, firstName: user.firstName },
+      resetCode.code
+    );
 
     res.status(200).json({
       message: `Password reset link sent to ${user.email}`,

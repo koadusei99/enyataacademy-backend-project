@@ -3,31 +3,34 @@ const morgan = require("morgan");
 const pg = require("pg");
 const cors = require("cors");
 require("dotenv").config();
-const { verifyToken, createJWT } = require("./middleware/Auth.js");
+const { verifyToken } = require("./middleware/Auth.js");
 const {
   registerUser,
   forgotPassword,
   resetPassword,
   login,
   createPin,
+  otpVerify,
 } = require("./controllers/AuthController");
-const { init, sendMail } = require("./controllers/MailController");
+const { init } = require("./controllers/MailController");
 const { getAllUsers } = require("./controllers/UserController");
 const {
-  errorFormatter,
   PasswordResetValidator,
   PasswordForgotValidator,
   LoginValidator,
   PinValidator,
+  RegisterValidator,
+  OTPValidator,
 } = require("./validators");
 
 const app = express();
 const port = 3000;
-const { RegisterValidator } = require("./validators.js");
 
 app.use(express.json());
 
+//initialize mail transporter
 init();
+//middlewares
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
@@ -54,13 +57,18 @@ client.connect(function (err) {
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+// get all users
 app.get("/users", getAllUsers);
-app.post("/register", registerUser);
+// register
+app.post("/register", RegisterValidator, registerUser);
+// sign in
 app.post("/login", LoginValidator, login);
 
 //Create route for Create Pin
 //When the post request is made, the function 'createPin' will run sucessfully
 app.post("/pin/create", verifyToken, PinValidator, createPin);
+// verify OTP
+app.post("/verify", OTPValidator, otpVerify);
 
 // PASSWORD RESET
 app.post("/password/forgot", PasswordForgotValidator, forgotPassword);
@@ -74,27 +82,6 @@ app.get("/test/auth", verifyToken, (req, res) => {
     return res.status(401).json({ success, message: "Unauthenticated", user });
   }
   res.status(200).json({ message: "Mail Sent", user });
-});
-
-app.get("/test/jwt", (req, res) => {
-  let token = createJWT({
-    identifier: "academy2@enyata.com",
-    name: "Academy2.0",
-  });
-  res.status(200).json({ token });
-});
-
-app.get("/test/mail", async (req, res) => {
-  let sent = await sendMail(
-    "welcome",
-    {
-      firstName: "Kwaku",
-      email: "wonpaidragon900@gmail.com",
-    },
-    "CLAPPP"
-  );
-
-  res.status(200).json({ message: "Mail Sent", mail: sent });
 });
 
 app.listen(port, () => {

@@ -6,7 +6,6 @@ const { createJWT } = require("../middleware/Auth");
 const { errorFormatter } = require("../validators");
 const bcrypt = require("bcryptjs");
 
-//TODO register controller
 const registerUser = async (req, res) => {
   const errors = validationResult(req).formatWith(errorFormatter);
   if (!errors.isEmpty()) {
@@ -14,20 +13,37 @@ const registerUser = async (req, res) => {
   }
 
   const { email, password, firstName, lastName, pin, phone } = req.body;
-  const passwordHash = await hashPassword(password);
-  const result = await db.User.create({
-    email,
-    password: passwordHash,
-    firstName,
-    lastname: lastName,
-    phone,
-    pin,
-  });
-  // send mail with OTP
-  sendMail("welcome", { email: email, firstName }, genOTP(4));
+
+  try {
+    // hash password
+    const passwordHash = await hashPassword(password);
+    // create user with data
+    const result = await db.User.create({
+      email,
+      password: passwordHash,
+      firstName,
+      lastname: lastName,
+      phone,
+      pin,
+    });
+
+    // create OTP
+    let code = genOTP();
+    let otp = await db.Vcode.create({
+      user_id: result.dataValues.id,
+      code,
+      expires_at: addMinutes(new Date(), 0).toISOString(),
+    });
+
+    // send mail with OTP
+    sendMail("welcome", { email, firstName }, code);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal error" });
+  }
 
   const token = createJWT({ identifier: email, name: firstName });
-  res.status(201).json({ message: "Account Created", token, result });
+  res.status(201).json({ message: "Account Created", token });
 };
 
 // PASSWORD RESET
@@ -73,6 +89,7 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+// Reset user password using params from reset link
 const resetPassword = async (req, res) => {
   const errors = validationResult(req).formatWith(errorFormatter);
   if (!errors.isEmpty()) {
@@ -83,11 +100,6 @@ const resetPassword = async (req, res) => {
   const { email } = req.query;
   const { password } = req.body;
   const { User, Vcode } = db.sequelize.models;
-
-  // check if password & confirm match
-  // if (password !== confirmPassword) {
-  //   return res.status(400).json({ message: "Passwords do not match" });
-  // }
 
   // verify reset code
   let resetCode = await Vcode.findOne({ where: { code } });
@@ -107,14 +119,13 @@ const resetPassword = async (req, res) => {
   }
 
   // check if it's expired
-  if (new Date(resetCode.expires_at) > new Date()) {
+  if (new Date(resetCode.expires_at) < new Date()) {
     return res.status(400).json({ message: "Expired reset code" });
   }
 
   //reset user's password
   user.password = await hashPassword(password);
   user.save();
-
   res.status(200).json({ message: "Password reset" });
 };
 
@@ -131,11 +142,11 @@ const login = async (req, res) => {
   //check if the password matches
   let user = await User.findOne({ where: { email: email } });
   if (!user) {
-    res.status(400).json({ message: "Invalid credentials" });
+    return res.status(400).json({ message: "Invalid credentials" });
   }
   let hashPass = await bcrypt.compare(password, user.password);
   if (!hashPass) {
-    res.status(400).json({ message: "Invalid credentials" });
+    return res.status(400).json({ message: "Invalid credentials" });
   }
   console.log(hashPass);
   // generate jwt and send to client
@@ -172,10 +183,43 @@ const createPin = async (req, res) => {
   res.json({ message: "Created Pin Sucessfully", storeDetails, pin });
 };
 
+// Verify OTP
+const otpVerify = async (req, res) => {
+  const errors = validationResult(req).formatWith(errorFormatter);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.mapped() });
+  }
+
+  const { otpCode } = req.body;
+  const { User, Vcode } = db.sequelize.models;
+
+  // verify reset code
+  let OTP = await Vcode.findOne({ where: { code: otpCode } });
+
+  console.log(OTP);
+  if (!OTP) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
+
+  // verify user
+  let user = await User.findOne({ where: { id: OTP.user_id } });
+  if (!user) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
+
+  // check if it's expired
+  if (new Date(OTP.expires_at) < new Date()) {
+    return res.status(400).json({ message: "Expired OTP" });
+  }
+
+  res.status(200).json({ message: "Email Verified", user: user.email });
+};
+
 module.exports = {
   registerUser,
   forgotPassword,
   resetPassword,
   login,
   createPin,
+  otpVerify,
 };

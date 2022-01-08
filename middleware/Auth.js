@@ -26,9 +26,5 @@ function createJWT({ identifier, name }) {
     expiresIn: "1h",
   });
 }
-function createVcode(email, firstName) {
-  return jwt.sign({ email, firstName }, process.env.TOKEN_SECRET, {
-    expiresIn: "10m",
-  });
-}
-module.exports = { verifyToken, createVcode, createJWT };
+
+module.exports = { verifyToken, createJWT };

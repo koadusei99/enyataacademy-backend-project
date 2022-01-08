@@ -1,7 +1,6 @@
 const { body } = require("express-validator");
 
-const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
-  // return `${location}-${param}-${msg}`;
+const errorFormatter = ({ msg }) => {
   return `${msg}`;
 };
 
@@ -60,7 +59,7 @@ const PasswordForgotValidator = [
     .isLength({ min: 5 }),
 ];
 
-// Forgot Password Validator
+// Login Validator
 const LoginValidator = [
   body("email")
     .exists({ checkFalsy: true })
@@ -90,10 +89,25 @@ const PinValidator = [
     .withMessage("Pin has to be exactly 4 numbers"),
 ];
 
+//Verify OTP Validator
+const OTPValidator = [
+  body("otpCode")
+    .exists({ checkFalsy: true })
+    .withMessage("OTP is required")
+    .bail()
+    .trim()
+    .isNumeric()
+    .withMessage("OTP has to be a number")
+    .isLength({ min: 4, max: 4 })
+    .withMessage("OTP has to be exactly 4 numbers"),
+];
+
 module.exports = {
   errorFormatter,
   PasswordResetValidator,
   PasswordForgotValidator,
   LoginValidator,
   PinValidator,
+  RegisterValidator,
+  OTPValidator,
 };

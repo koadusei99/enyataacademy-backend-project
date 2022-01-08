@@ -55,9 +55,23 @@ const LoginValidator = [
     .isLength({ min: 8 }),
 ];
 
+//Create Pin Validator
+const PinValidator = [
+  body("pin")
+    .exists({ checkFalsy: true })
+    .withMessage("Pin is required")
+    .bail()
+    .trim()
+    .isNumeric()
+    .withMessage("Pin has to be a number")
+    .isLength({ min: 4, max: 4 })
+    .withMessage("Pin has to be exactly 4 numbers"),
+];
+
 module.exports = {
   errorFormatter,
   PasswordResetValidator,
   PasswordForgotValidator,
   LoginValidator,
+  PinValidator,
 };

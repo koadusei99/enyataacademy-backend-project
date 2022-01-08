@@ -14,16 +14,16 @@ const registerUser = async (req, res) => {
   }
 
   const { email, password, firstName, lastName, pin, phone } = req.body;
-  const hashPassword = await bcrypt.hash(password, 12);
+  const passwordHash = await hashPassword(password);
   const result = await db.User.create({
     email,
-    password: hashPassword,
+    password: passwordHash,
     firstName,
     lastname: lastName,
     phone,
     pin,
   });
-  const token = "dfgkagaisydahksfkaiua";
+  const token = createJWT({ identifier: email, name: firstName });
   res.status(201).json({ message: "Account Created", token, result });
 };
 

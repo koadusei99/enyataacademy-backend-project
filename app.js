@@ -9,6 +9,7 @@ const {
   forgotPassword,
   resetPassword,
   login,
+  createPin,
 } = require("./controllers/AuthController");
 const { init, sendMail } = require("./controllers/MailController");
 const {
@@ -16,6 +17,7 @@ const {
   PasswordResetValidator,
   PasswordForgotValidator,
   LoginValidator,
+  PinValidator,
 } = require("./validators");
 
 const app = express();
@@ -50,6 +52,10 @@ app.get("/", (req, res) => {
 });
 app.post("/register", registerUser);
 app.post("/login", LoginValidator, login);
+
+//Create route for Create Pin
+//When the post request is made, the function 'createPin' will run sucessfully
+app.post("/pin/create", verifyToken, PinValidator, createPin);
 
 // PASSWORD RESET
 app.post("/password/forgot", PasswordForgotValidator, forgotPassword);

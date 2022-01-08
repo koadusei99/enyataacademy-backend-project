@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const path = require("path");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const emailsDir = path.join(__dirname, "mails");
 

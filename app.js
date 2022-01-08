@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const pg = require("pg");
+const cors = require("cors");
 require("dotenv").config();
 const { verifyToken, createJWT } = require("./middleware/Auth.js");
 const {
@@ -21,6 +22,7 @@ const port = 3000;
 init();
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(cors());
 
 // DATABASE CONNECTION
 let conString = process.env.DATABASE_URL;

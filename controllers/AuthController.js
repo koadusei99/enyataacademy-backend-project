@@ -26,7 +26,8 @@ const forgotPassword = async (req, res) => {
   // check if user with email exists
   let user = await User.findOne({ where: { email } });
   if (!user) {
-    return res.status(400).json({ message: "User does not exist" });
+    res.status(400).json({ message: "User does not exist" });
+    return;
   }
   let code = genStr(64);
   let expires_at = addMinutes(new Date(), 10).toISOString();

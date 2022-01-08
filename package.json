@@ -23,6 +23,7 @@
   "homepage": "https://github.com/koadusei99/enyataacademy-backend-project#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
     "email-templates": "^8.0.8",

@@ -7,11 +7,24 @@ const { errorFormatter } = require("../validators");
 const bcrypt = require("bcryptjs");
 
 //TODO register controller
-const registerUser = (req, res) => {
-  const { email, password, firstName, lastName } = req.body;
-  let user = { email, password, firstName, lastName };
-  let token = "kudhkdsunds89sdyisud";
-  res.status(201).json({ message: "Account Created", token });
+const registerUser = async (req, res) => {
+  const errors = validationResult(req).formatWith(errorFormatter);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.mapped() });
+  }
+
+  const { email, password, firstName, lastName, pin, phone } = req.body;
+  const passwordHash = await hashPassword(password);
+  const result = await db.User.create({
+    email,
+    password: passwordHash,
+    firstName,
+    lastname: lastName,
+    phone,
+    pin,
+  });
+  const token = createJWT({ identifier: email, name: firstName });
+  res.status(201).json({ message: "Account Created", token, result });
 };
 
 // PASSWORD RESET

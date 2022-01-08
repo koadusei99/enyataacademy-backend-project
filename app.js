@@ -23,6 +23,9 @@ const {
 
 const app = express();
 const port = 3000;
+const { RegisterValidator } = require("./validators.js");
+
+app.use(express.json());
 
 init();
 app.use(morgan("dev"));

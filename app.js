@@ -3,7 +3,6 @@ const morgan = require("morgan");
 const pg = require("pg");
 const cors = require("cors");
 require("dotenv").config();
-
 const { verifyToken, createJWT } = require("./middleware/Auth.js");
 const {
   registerUser,

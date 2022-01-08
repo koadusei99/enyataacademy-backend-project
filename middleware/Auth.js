@@ -23,7 +23,7 @@ function verifyToken(req, res, next) {
 //helpers
 function createJWT({ identifier, name }) {
   return jwt.sign({ identifier, name }, process.env.TOKEN_SECRET, {
-    expiresIn: "10m",
+    expiresIn: "1h",
   });
 }
 function createVcode(email, firstName) {

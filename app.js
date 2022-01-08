@@ -12,6 +12,7 @@ const {
   createPin,
 } = require("./controllers/AuthController");
 const { init, sendMail } = require("./controllers/MailController");
+const { getAllUsers } = require("./controllers/UserController");
 const {
   errorFormatter,
   PasswordResetValidator,
@@ -50,6 +51,7 @@ client.connect(function (err) {
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+app.get("/users", getAllUsers);
 app.post("/register", registerUser);
 app.post("/login", LoginValidator, login);
 

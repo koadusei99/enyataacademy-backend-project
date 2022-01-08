@@ -6,11 +6,9 @@ const { registerUser } = require("./controllers/AuthController");
 const app = express();
 require("dotenv").config();
 const port = 3000;
-const {RegisterValidator} = require('./validators.js')
+const { RegisterValidator } = require("./validators.js");
 
-
-app.use(express.json())
-
+app.use(express.json());
 
 app.use(morgan("dev"));
 

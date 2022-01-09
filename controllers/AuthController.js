@@ -17,6 +17,12 @@ const registerUser = async (req, res) => {
   try {
     // hash password
     const passwordHash = await hashPassword(password);
+    //check if user email and phone number are take
+    let taken = await db.User.findOne({ where: { email } });
+    if (taken) {
+      return res.status(400).json({ message: "Email is taken" });
+    }
+
     // create user with data
     const result = await db.User.create({
       email,
@@ -32,7 +38,7 @@ const registerUser = async (req, res) => {
     let otp = await db.Vcode.create({
       user_id: result.dataValues.id,
       code,
-      expires_at: addMinutes(new Date(), 0).toISOString(),
+      expires_at: addMinutes(new Date(), 10).toISOString(),
     });
 
     // send mail with OTP
@@ -42,8 +48,7 @@ const registerUser = async (req, res) => {
     return res.status(500).json({ message: "Internal error" });
   }
 
-  const token = createJWT({ identifier: email, name: firstName });
-  res.status(201).json({ message: "Account Created", token });
+  res.status(201).json({ message: "Account Created" });
 };
 
 // PASSWORD RESET

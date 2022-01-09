@@ -22,6 +22,7 @@ const {
   RegisterValidator,
   OTPValidator,
 } = require("./validators");
+const db = require("./models/index");
 
 const app = express();
 const port = 3000;
@@ -54,7 +55,7 @@ client.connect(function (err) {
 });
 
 //ROUTES
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   res.send("Hello World!");
 });
 // get all users

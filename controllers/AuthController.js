@@ -211,8 +211,10 @@ const otpVerify = async (req, res) => {
   if (new Date(OTP.expires_at) < new Date()) {
     return res.status(400).json({ message: "Expired OTP" });
   }
+  //generate jwt
+  let token = createJWT({ name: user.firstName, identifier: user.email });
 
-  res.status(200).json({ message: "Email Verified", user: user.email });
+  res.status(200).json({ message: "User Verified", user: user.email, token });
 };
 
 module.exports = {
